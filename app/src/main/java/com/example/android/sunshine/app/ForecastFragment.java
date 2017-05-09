@@ -202,21 +202,19 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         final View parallaxView = rootView.findViewById(R.id.parallax_bar);
         if (null != parallaxView) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        int max = parallaxView.getHeight();
-                        if (dy > 0) {
-                            parallaxView.setTranslationY(Math.max(-max, parallaxView.getTranslationY() - dy / 2));
-                        } else {
-                            parallaxView.setTranslationY(Math.min(0, parallaxView.getTranslationY() - dy / 2));
-                        }
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    int max = parallaxView.getHeight();
+                    if (dy > 0) {
+                        parallaxView.setTranslationY(Math.max(-max, parallaxView.getTranslationY() - dy / 2));
+                    } else {
+                        parallaxView.setTranslationY(Math.min(0, parallaxView.getTranslationY() - dy / 2));
                     }
-                });
-            }
+                }
+            });
         }
 
         final AppBarLayout appbarView = (AppBarLayout)rootView.findViewById(R.id.appbar);
