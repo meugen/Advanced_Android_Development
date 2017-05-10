@@ -70,6 +70,10 @@ public class Utility {
                 .commit();
     }
 
+    public static void resetLastLocationStatus(final Context context) {
+        setLastLocationStatus(context, SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+    }
+
     static String formatDate(long dateInMilliseconds) {
         Date date = new Date(dateInMilliseconds);
         return DateFormat.getDateInstance().format(date);

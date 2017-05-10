@@ -289,6 +289,8 @@ public class ForecastFragment extends Fragment
                     emptyView.setText(R.string.server_is_down_message);
                 } else if (status == SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID) {
                     emptyView.setText(R.string.server_invalid_message);
+                } else if (status == SunshineSyncAdapter.LOCATION_STATUS_INVALID) {
+                    emptyView.setText(R.string.location_invalid_message);
                 } else {
                     emptyView.setText(R.string.no_weather_information_available_message);
                 }

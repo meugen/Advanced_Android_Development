@@ -115,5 +115,6 @@
     <string name="no_internet_connection_message">No Weather Information Available. No Internet Connection</string>
     <string name="server_is_down_message">No Weather Information Available. Server is down</string>
     <string name="server_invalid_message">No Weather Information Available. Server sent an invalid message</string>
+    <string name="location_invalid_message">No Weather Information Available. Invalid location</string>
 
 </resources>

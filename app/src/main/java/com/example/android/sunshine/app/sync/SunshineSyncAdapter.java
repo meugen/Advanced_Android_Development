@@ -61,13 +61,15 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     @IntDef({LOCATION_STATUS_OK,
             LOCATION_STATUS_SERVER_DOWN,
             LOCATION_STATUS_SERVER_INVALID,
-            LOCATION_STATUS_UNKNOWN})
+            LOCATION_STATUS_UNKNOWN,
+            LOCATION_STATUS_INVALID})
     public @interface LocationStatus {}
 
     public static final int LOCATION_STATUS_OK = 0;
     public static final int LOCATION_STATUS_SERVER_DOWN = 1;
     public static final int LOCATION_STATUS_SERVER_INVALID = 2;
     public static final int LOCATION_STATUS_UNKNOWN = 3;
+    public static final int LOCATION_STATUS_INVALID = 4;
 
 
     private static final String[] NOTIFY_WEATHER_PROJECTION = new String[] {
@@ -109,7 +111,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             // Possible parameters are avaiable at OWM's forecast API page, at
             // http://openweathermap.org/API#forecast
             final String FORECAST_BASE_URL =
-                    "http://google.com/?";
+                    "http://api.openweathermap.org/data/2.5/forecast/daily?";
             final String QUERY_PARAM = "q";
             final String FORMAT_PARAM = "mode";
             final String UNITS_PARAM = "units";
@@ -156,7 +158,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             }
             forecastJsonStr = buffer.toString();
             getWeatherDataFromJson(forecastJsonStr, locationQuery);
-            Utility.setLastLocationStatus(getContext(), LOCATION_STATUS_OK);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
@@ -223,7 +224,20 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         final String OWM_DESCRIPTION = "main";
         final String OWM_WEATHER_ID = "id";
 
+        final String CODE = "cod";
+
         JSONObject forecastJson = new JSONObject(forecastJsonStr);
+        if (forecastJson.has(CODE)) {
+            final int code = forecastJson.getInt(CODE);
+            if (code == HttpURLConnection.HTTP_NOT_FOUND) {
+                Utility.setLastLocationStatus(getContext(), LOCATION_STATUS_INVALID);
+                return;
+            }
+            if (code != HttpURLConnection.HTTP_OK) {
+                Utility.setLastLocationStatus(getContext(), LOCATION_STATUS_SERVER_DOWN);
+                return;
+            }
+        }
         JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
 
         JSONObject cityJson = forecastJson.getJSONObject(OWM_CITY);
