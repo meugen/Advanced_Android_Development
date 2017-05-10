@@ -20,6 +20,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 
+import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -48,6 +50,22 @@ public class Utility {
 
         // For presentation, assume the user doesn't care about tenths of a degree.
         return String.format(context.getString(R.string.format_temperature), temperature);
+    }
+
+    public static int getLastLocationStatus(
+            final Context context) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(context.getString(R.string.pref_last_location_status_key),
+                SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+    }
+
+    public static void setLastLocationStatus(
+            final Context context,
+            @SunshineSyncAdapter.LocationStatus final int locationStatus) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit()
+                .putInt(context.getString(R.string.pref_last_location_status_key), locationStatus)
+                .apply();
     }
 
     static String formatDate(long dateInMilliseconds) {
