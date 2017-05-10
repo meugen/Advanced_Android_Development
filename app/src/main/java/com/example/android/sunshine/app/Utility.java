@@ -52,6 +52,8 @@ public class Utility {
         return String.format(context.getString(R.string.format_temperature), temperature);
     }
 
+    @SuppressWarnings("ResourceType")
+    @SunshineSyncAdapter.LocationStatus
     public static int getLastLocationStatus(
             final Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -65,7 +67,7 @@ public class Utility {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit()
                 .putInt(context.getString(R.string.pref_last_location_status_key), locationStatus)
-                .apply();
+                .commit();
     }
 
     static String formatDate(long dateInMilliseconds) {

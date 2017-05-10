@@ -16,10 +16,12 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -42,7 +44,9 @@ import com.example.android.sunshine.app.utils.ConnectivityUtils;
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ForecastFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private ForecastAdapter mForecastAdapter;
 
@@ -187,6 +191,20 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         super.onActivityCreated(savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        PreferenceManager.getDefaultSharedPreferences(getContext())
+                .registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        PreferenceManager.getDefaultSharedPreferences(getContext())
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     // since we read the location when we create the loader, all we need to do is restart things
     void onLocationChanged( ) {
         getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
@@ -253,17 +271,30 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() == 0) {
-            final boolean connected = ConnectivityUtils.isConnected(getContext());
-            if (!connected) {
-                emptyView.setText(R.string.no_internet_connection_message);
-            }
-        }
         mForecastAdapter.swapCursor(data);
+        updateErrorMessage();
         if (mPosition != ListView.INVALID_POSITION) {
             // If we don't need to restart the loader, and there's a desired position to restore
             // to, do so now.
             mListView.smoothScrollToPosition(mPosition);
+        }
+    }
+
+    private void updateErrorMessage() {
+        if (mForecastAdapter.isEmpty()) {
+            final boolean connected = ConnectivityUtils.isConnected(getContext());
+            if (connected) {
+                final int status = Utility.getLastLocationStatus(getContext());
+                if (status == SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN) {
+                    emptyView.setText(R.string.server_is_down_message);
+                } else if (status == SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID) {
+                    emptyView.setText(R.string.server_invalid_message);
+                } else {
+                    emptyView.setText(R.string.no_weather_information_available_message);
+                }
+            } else {
+                emptyView.setText(R.string.no_internet_connection_message);
+            }
         }
     }
 
@@ -276,6 +307,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         mUseTodayLayout = useTodayLayout;
         if (mForecastAdapter != null) {
             mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        if (key.equals(getString(R.string.pref_last_location_status_key))) {
+            updateErrorMessage();
         }
     }
 }
