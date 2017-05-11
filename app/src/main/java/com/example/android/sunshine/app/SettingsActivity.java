@@ -95,6 +95,15 @@ public class SettingsActivity extends PreferenceActivity
             if (prefIndex >= 0) {
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
             }
+        } else if (getString(R.string.pref_location_key).equals(preference.getKey())) {
+            final int lastLocationStatus = Utility.getLastLocationStatus(this);
+            if (lastLocationStatus == SunshineSyncAdapter.LOCATION_STATUS_INVALID) {
+                preference.setSummary(getString(R.string.pref_location_error_description, value));
+            } else if (lastLocationStatus == SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN) {
+                preference.setSummary(getString(R.string.pref_location_unknown_description, value));
+            } else {
+                preference.setSummary(value.toString());
+            }
         } else {
             // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
