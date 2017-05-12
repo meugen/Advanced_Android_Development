@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "27250167327",
+    "firebase_url": "https://stunning-oasis-167412.firebaseio.com",
+    "project_id": "stunning-oasis-167412",
+    "storage_bucket": "stunning-oasis-167412.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27250167327:android:83b792e26f07bf18",
+        "android_client_info": {
+          "package_name": "com.example.android.sunshine.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27250167327-5va8n8ogmstrjatkvcijhbfobuhcsnts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.sunshine.app",
+            "certificate_hash": "8de816a9ad37fc6c23e0576ec6401a561670012c"
+          }
+        },
+        {
+          "client_id": "27250167327-8b89vp98res4ldkpftacrvpnlsgl74in.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmDWsmxLAsuO1hW7l-ytthRXtJX3X808k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27250167327-8b89vp98res4ldkpftacrvpnlsgl74in.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 // TODO insert an api key here
 def MyOpenWeatherMapApiKey = '"<<API KEY HERE>>"'
@@ -9,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.android.sunshine.app"
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -30,4 +31,5 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-annotations:25.3.1'
+    compile 'com.google.firebase:firebase-messaging:10.2.4'
 }
