@@ -19,15 +19,20 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 1;
 
     private boolean mTwoPane;
     private String mLocation;
@@ -38,6 +43,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         mLocation = Utility.getPreferredLocation(this);
 
         setContentView(R.layout.activity_main);
+        checkPlayServices();
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
@@ -63,8 +69,20 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         SunshineSyncAdapter.initializeSyncAdapter(this);
     }
 
-    private void checkPlayServices() {
-
+    private boolean checkPlayServices() {
+        final GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+        final int resultCode = availability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (availability.isUserResolvableError(resultCode)) {
+                availability.getErrorDialog(this, resultCode,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(LOG_TAG, "Google services unavailable on this device");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override
